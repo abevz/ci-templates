@@ -1,0 +1,29 @@
+name: Drill build
+on:
+  workflow_call:
+    inputs:
+      image:
+        type: string
+        required: true
+      push:
+        type: boolean
+        default: false
+    secrets:
+      registry_token:
+        required: true
+    outputs:
+      digest:
+        value: ${{ jobs.build.outputs.digest }}
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      digest: ${{ steps.fake.outputs.digest }} # ссылка на выход шага
+    steps:
+      - id: fake
+        run: |
+          echo "image=${{ inputs.image }} push=${{ inputs.push }}"
+          echo "token length: ${#TOKEN}"
+          echo "digest=sha256:abc123" >> "$GITHUB_OUTPUT"
+        env:
+          TOKEN: ${{ secrets.registry_token }}

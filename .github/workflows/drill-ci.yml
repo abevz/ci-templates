@@ -1,0 +1,17 @@
+name: Drill CI
+on: [push, pull_request]
+
+jobs:
+  call:
+    uses: ./.github/workflows/drill-build.yml
+    with:
+      image: demo
+      push: ${{ github.event_name == 'push' }} # true только при push
+    secrets:
+      registry_token: ${{ secrets.DRILL_TOKEN }}
+
+  show:
+    needs: call
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "digest is ${{ needs.call.outputs.digest }}"
